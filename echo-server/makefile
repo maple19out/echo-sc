@@ -1,4 +1,4 @@
-TARGET=../bin/echo-server
+TARGET=./echo-server
 CPPFLAGS+=-Wall -O2
 LDLIBS+=-pthread
 
