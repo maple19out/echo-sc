@@ -2,19 +2,9 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
-#ifdef __linux__
 #include <arpa/inet.h>
 #include <sys/socket.h>
-#endif // __linux
-#ifdef WIN32
-#include <winsock2.h>
-#include "../mingw_net.h"
-#endif // WIN32
 #include <thread>
-
-#ifdef WIN32
-void perror(const char* msg) { fprintf(stderr, "%s %ld\n", msg, GetLastError()); }
-#endif // WIN32
 
 void usage() {
 	printf("syntax: echo-client <ip> <port>\n");
@@ -65,10 +55,6 @@ int main(int argc, char* argv[]) {
 		return -1;
 	}
 
-#ifdef WIN32
-	WSAData wsaData;
-	WSAStartup(0x0202, &wsaData);
-#endif // WIN32
 
 	int sd = ::socket(AF_INET, SOCK_STREAM, 0);
 	if (sd == -1) {
@@ -90,7 +76,6 @@ int main(int argc, char* argv[]) {
 
 	std::thread t(recvThread, sd);
 	t.detach();
-
 	while (true) {
 		static const int BUFSIZE = 65536;
 		char buf[BUFSIZE];
